@@ -4,6 +4,27 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "mongodb": "^2.2.31"
+    "axios": "^0.16.2",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-react": "^6.24.1",
+    "body-parser": "^1.17.2",
+    "css-loader": "^0.28.7",
+    "express": "^4.15.4",
+    "extract-text-webpack-plugin": "^3.0.0",
+    "mongodb": "^2.2.31",
+    "node-sass": "^4.5.3",
+    "nodemon": "^1.12.0",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "sass-loader": "^6.0.6",
+    "webpack": "^3.5.5",
+    "webpack-dev-middleware": "^1.12.0",
+    "webpack-notifier": "^1.5.0"
+  },
+  "scripts": {
+    "start": "killall node && nodemon server.js --watch server.js --watch routes.js",
+    "build": "webpack"
   }
 }
