@@ -1,0 +1,158 @@
+.todo {
+    transform: translate(-50%, -50%);
+    background: $white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 400px;
+    box-shadow: 0 4px 10px rgba($charcoal, .2);
+    
+    &__inner {
+        overflow: hidden;
+        position: relative;
+    }
+
+    &__section {
+        padding: 40px;
+    }
+
+    &__header {
+        display: flex;
+        align-items: center;
+
+        &-block {
+            flex: 0 0 50%;
+            text-transform: uppercase;
+        }
+
+        &-date {
+            line-height: 1;
+        }
+
+        &-day {
+            float: left;
+            font-size: 40px;
+            font-weight: 600;
+            margin-top: -2px;
+            margin: -4px 10px 0 0;
+        }
+
+        &-month,
+        &-weekday {
+            font-weight: 600;
+        }
+
+        &-weekday {
+            text-align: right;
+        }
+    }
+
+    &__body {
+        padding-top: 0;
+        height: 500px;
+        max-height: 500px;
+        overflow: auto;
+    }
+
+    &__add-btn {
+        transform: translate(-50%, 50%);
+        transition: all .3s;
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: $blue;
+        color: $white;
+        box-shadow: 0 4px 20px rgba(darken($blue, 20%), .5);
+        cursor: pointer;
+
+        &.out {
+            transform: translate(-50%, 0);
+            bottom: 20px;
+        }
+
+        &-icon {
+            transform: translate(-50%, -50%);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            font-size: 50px;
+        }
+    }
+
+    &__add {
+        transition: all .3s;
+        position: absolute;
+        top: 0;
+        left: 100%;
+        width: 100%;
+        height: 100%;
+        z-index: 2;
+        background: $purple;
+        color: $white;
+        padding: 40px;
+
+        &.open {
+            left: 0;
+        }
+
+        &-close {
+            line-height: .8;
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            font-size: 22px;
+            color: $blue;
+            cursor: pointer;
+        }
+
+        &-title {
+            font-size: 20px;
+            text-align: center;
+            line-height: 1;
+        }
+
+        &-form {
+            transform: translate(0, -50%);
+            position: absolute;
+            top: 50%;
+            left: 40px;
+            right: 40px;
+        }
+
+        &-input {
+            width: 100%;
+            font-family: 'Source Sans Pro', sans-serif;
+            -webkit-appearance: none;
+            border: 0;
+            padding: 5px 0;
+            color: rgba($white, .8);
+            border-bottom: 2px solid rgba($white, .3);
+            outline: 0;
+            margin-bottom: 20px;
+            background: none;
+            font-size: 16px;
+
+            &::-webkit-input-placeholder {
+                color: rgba($white, .3);
+            }
+        }
+
+        &-submit {
+            -webkit-appearance: none;
+            width: 100%;
+            display: block;
+            border: 0;
+            outline: 0;
+            background: $blue;
+            color: $white;
+            font-size: 12px;
+            text-transform: uppercase;
+            font-weight: 600;
+            padding: 15px;
+            margin-top: 20px;
+        }
+    }
+}

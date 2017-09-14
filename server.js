@@ -9,6 +9,7 @@ const app = express();
 
 const compiler = webpack(webpackConfig);
 
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.use(webpackDevMiddleware(compiler, {

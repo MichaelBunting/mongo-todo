@@ -9,6 +9,15 @@ body {
     padding: 0;
     font-family: 'Source Sans Pro', sans-serif;
     font-size: 16px;
-    color: #2d2d2d;
+    color: $charcoal;
     -webkit-font-smoothing: antialiased;
+    background: $tan;
+}
+
+.clearfix {
+    &::after {
+        content: '';
+        display: table;
+        clear: both;
+    }
 }

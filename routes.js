@@ -45,6 +45,25 @@ module.exports = function(app, db) {
         });
     });
 
+    app.post('/tasks/add', (req, res) => {
+        let newTask = {
+            name: req.body.taskName,
+            time: req.body.taskTime,
+            complete: false
+        };
+
+        db.collection('tasks').insertOne(newTask, err => {
+            if (err)
+                handleError(err);
+
+            res.json({
+                error: false,
+                message: `Added task '${newTask.name}' at time '${newTask.time}' with completion of '${newTask.complete}'`,
+                data: newTask
+            });
+        });
+    });
+
     app.get('/', (req, res) => {
         res.sendFile(__dirname + '/www/index.html');
     })
