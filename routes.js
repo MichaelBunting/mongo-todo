@@ -1,4 +1,5 @@
 const RandomGenerator =  require('./testing/RandomGenerator');
+const ObjectId = require('mongodb').ObjectId;
 
 function handleError(err) {
     const RED = '\033[0;31m';
@@ -52,14 +53,30 @@ module.exports = function(app, db) {
             complete: false
         };
 
-        db.collection('tasks').insertOne(newTask, err => {
+        db.collection('tasks').insertOne(newTask, (err, obj) => {
             if (err)
                 handleError(err);
 
             res.json({
                 error: false,
                 message: `Added task '${newTask.name}' at time '${newTask.time}' with completion of '${newTask.complete}'`,
-                data: newTask
+                newTask: obj.ops[0]
+            });
+        });
+    });
+
+    app.delete('/tasks/delete/:objectId', (req, res) => {
+        let query = {
+            '_id': ObjectId(req.params.objectId)
+        };
+
+        db.collection('tasks').deleteOne(query, err => {
+            if (err) 
+                handleError(err);
+
+            res.json({
+                message: `Deleted item with id '${req.params.objectId}'`,
+                taskId: query._id
             });
         });
     });

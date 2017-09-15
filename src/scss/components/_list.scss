@@ -4,8 +4,20 @@
     list-style: none;
 
     &__item {
+        transition: all .3s;
         padding: 10px 0;
         position: relative;
+
+        &:not(.complete) {
+            &:hover {
+                padding: 10px 0 10px 25px;
+    
+                .list__delete {
+                    pointer-events: all;
+                    opacity: 1;
+                }
+            }
+        }
 
         &:first-child {
             margin-top: -10px;
@@ -25,6 +37,23 @@
         }
     }
 
+    &__delete {
+        transform: translate(0, -50%);
+        transition: all .3s;
+        line-height: 1;
+        position: absolute;
+        left: 0;
+        top: 50%;
+        color: $gray;
+        cursor: pointer;
+        pointer-events: none;
+        opacity: 0;
+
+        &:hover {
+            color: $red;
+        }
+    }
+
     &__time {
         font-size: 13px;
         color: $gray;
@@ -41,6 +70,7 @@
         border: 3px solid $gray-light;
         border-radius: 50%;
         overflow: hidden;
+        cursor: pointer;
 
         &::after {
             transition: all .2s;

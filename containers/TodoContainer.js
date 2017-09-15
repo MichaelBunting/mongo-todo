@@ -52,24 +52,32 @@ class TodoContainer extends React.Component {
         }
 
         axios.post('/tasks/add', postData)
-            .then()
+            .then(data => {
+                taskNameInput.value = '';
+                
+                let currentTasks = this.state.tasks;
+        
+                currentTasks.push(data.data.newTask);
+        
+                this.setState({
+                    tasks: currentTasks
+                });
+            })
             .catch(err => {
                 console.error(err);
             });
+    }
 
-        taskNameInput.value = '';
+    deleteTask(e) {
+        let id = e.currentTarget.parentNode.dataset.id;
 
-        let currentTasks = this.state.tasks;
-
-        currentTasks.push({
-            name: postData.taskName,
-            time: postData.taskTime,
-            complete: postData.complete
-        });
-
-        this.setState({
-            tasks: currentTasks
-        });
+        axios.delete('/tasks/delete/' + id)
+            .then(data => {
+                document.querySelector(`[data-id="${data.data.taskId}"]`).remove();
+            })
+            .catch(err => {
+                console.error(err);
+            });
     }
 
     render() {
@@ -107,7 +115,8 @@ class TodoContainer extends React.Component {
                         <div className="todo__section todo__body">
                             {this.state.tasks.length > 0 ?
                                 <List list={this.state.tasks}
-                                    completeTask={this.completeTask} />
+                                    completeTask={this.completeTask}
+                                    deleteTask={this.deleteTask} />
                             :
                                 <span>Sorry, No tasks</span>
                             }
