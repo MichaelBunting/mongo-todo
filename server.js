@@ -28,7 +28,7 @@ MongoClient.connect('mongodb://localhost:27017/mongo-todo', (err, database) => {
     if (!err) {
         console.dir(`Connected to ${database.databaseName}`);
 
-        const routes = require('./routes')(app, database);
+        const routes = require('./routes').init(app, database);
 
         app.listen(3000, 'localhost', () => {
             console.log('App listening at: http://localhost:3000');

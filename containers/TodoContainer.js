@@ -11,6 +11,10 @@ class TodoContainer extends React.Component {
             loading: true,
             tasks: []
         }
+
+        this.completeTask = this.completeTask.bind(this);
+        this.addNewTask = this.addNewTask.bind(this);
+        this.deleteTask = this.deleteTask.bind(this);
     }
 
     componentDidMount() {
@@ -27,10 +31,29 @@ class TodoContainer extends React.Component {
     }
 
     completeTask(e) {
-        let check = e.currentTarget;
-        let task = check.parentNode;
+        let id = e.currentTarget.parentNode.dataset.id;
+        let taskObj = this.state.tasks.filter(task => {
+            return task._id === id;
+        })[0];
+        let completeToggle = taskObj.complete ? false : true;
 
-        task.classList.toggle('complete');
+        axios.put(`/tasks/toggleComplete/${id}&${completeToggle}`)
+            .then(data => {
+                let completedTask = this.state.tasks.find(task => {
+                    return task._id === data.data.taskId;
+                });
+
+                console.log(completedTask);
+                // console.log(data);
+            })
+            .catch(err => {
+                console.error(err);
+            });
+
+        // let check = e.currentTarget;
+        // let task = check.parentNode;
+
+        // task.classList.toggle('complete');
     }
 
     toggleTodoAdd(e) {
@@ -38,6 +61,12 @@ class TodoContainer extends React.Component {
         
         document.querySelector(target).classList.toggle('open');
         document.querySelector('.todo__add-btn').classList.toggle('out');
+        
+        if (document.querySelector(target).classList.contains('open')) {
+            setTimeout(() => {
+                document.querySelector(target).querySelector('input[name="taskName"]').focus();
+            }, 300);
+        }
     }
 
     addNewTask(e) {
@@ -73,7 +102,14 @@ class TodoContainer extends React.Component {
 
         axios.delete('/tasks/delete/' + id)
             .then(data => {
-                document.querySelector(`[data-id="${data.data.taskId}"]`).remove();
+                let currentTasks = this.state.tasks;
+                let taskToDelete = currentTasks.findIndex(task => task._id === data.data.taskId);
+
+                currentTasks.splice(taskToDelete, 1);
+
+                this.setState({
+                    tasks: currentTasks
+                });
             })
             .catch(err => {
                 console.error(err);
@@ -101,43 +137,45 @@ class TodoContainer extends React.Component {
                         Loading...
                     </div>
                 : 
-                    <div className="todo__inner">
-                        <div className="todo__header todo__section">
-                            <div className="todo__header-date todo__header-block clearfix">
-                                <div className="todo__header-day">{date[2]}</div>
-                                <div className="todo__header-month">{date[1]}</div>
-                                <div className="todo__header-year">{date[3]}</div>
+                    <div>
+                        <div className="todo__inner">
+                            <div className="todo__header todo__section">
+                                <div className="todo__header-date todo__header-block clearfix">
+                                    <div className="todo__header-day">{date[2]}</div>
+                                    <div className="todo__header-month">{date[1]}</div>
+                                    <div className="todo__header-year">{date[3]}</div>
+                                </div>
+                                <div className="todo__header-weekday todo__header-block">
+                                    {date[0]}
+                                </div>
                             </div>
-                            <div className="todo__header-weekday todo__header-block">
-                                {date[0]}
+                            <div className="todo__section todo__body">
+                                {this.state.tasks.length > 0 ?
+                                    <List list={this.state.tasks}
+                                        completeTask={this.completeTask}
+                                        deleteTask={this.deleteTask} />
+                                :
+                                    <span>Sorry, No tasks</span>
+                                }
+                            </div>
+
+                            <div className="todo__add" id="todoAdd">
+                                <div className="todo__add-close" onClick={this.toggleTodoAdd} data-target="#todoAdd">&#x2715;</div>
+                                <div className="todo__add-title">Add new todo</div>
+
+                                <form method="post" className="todo__add-form" onSubmit={this.addNewTask} name="addTodo">
+                                    <input type="text" className="todo__add-input" placeholder="Task Name" autoComplete="off" name="taskName" />
+                                    <input type="time" className="todo__add-input" defaultValue={time} name="taskTime" />
+                                    <button className="todo__add-submit" onClick={this.toggleTodoAdd} data-target="#todoAdd">Add Todo</button>
+                                </form>
                             </div>
                         </div>
-                        <div className="todo__section todo__body">
-                            {this.state.tasks.length > 0 ?
-                                <List list={this.state.tasks}
-                                    completeTask={this.completeTask}
-                                    deleteTask={this.deleteTask} />
-                            :
-                                <span>Sorry, No tasks</span>
-                            }
-                        </div>
 
-                        <div className="todo__add" id="todoAdd">
-                            <div className="todo__add-close" onClick={this.toggleTodoAdd} data-target="#todoAdd">&#x2715;</div>
-                            <div className="todo__add-title">Add new todo</div>
-
-                            <form method="post" className="todo__add-form" onSubmit={this.addNewTask.bind(this)} name="addTodo">
-                                <input type="text" className="todo__add-input" placeholder="Task Name" name="taskName" />
-                                <input type="time" className="todo__add-input" defaultValue={time} name="taskTime" />
-                                <button className="todo__add-submit" onClick={this.toggleTodoAdd} data-target="#todoAdd">Add Todo</button>
-                            </form>
+                        <div className="todo__add-btn" onClick={this.toggleTodoAdd} data-target="#todoAdd">
+                            <span className="todo__add-btn-icon">&#43;</span>
                         </div>
                     </div>
                 }
-
-                <div className="todo__add-btn" onClick={this.toggleTodoAdd} data-target="#todoAdd">
-                    <span className="todo__add-btn-icon">&#43;</span>
-                </div>
             </div>
         )
     }

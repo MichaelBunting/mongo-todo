@@ -1,5 +1,4 @@
-const RandomGenerator =  require('./testing/RandomGenerator');
-const ObjectId = require('mongodb').ObjectId;
+// const RandomGenerator =  require('./testing/RandomGenerator');
 
 function handleError(err) {
     const RED = '\033[0;31m';
@@ -11,81 +10,21 @@ function handleError(err) {
     `);
 }
 
-module.exports = function(app, db) {
-    app.get('/tasks/all', (req, res) => {
-        db.collection('tasks').find().toArray()
-            .then(tasks => {
-                res.send(tasks);
-            })
-            .catch(err => {
-                handleError(err);
-            });
-    });
+module.exports = {
+    init: (app, db) => {
+        const TaskController = new (require('./controllers/TaskController'))(db);
 
-    app.get('/tasks/insertRandom', (req, res) => {
-        let date = new Date();
-        let ampm = date.getHours() > 12 ? 'pm' : 'am';
-        let hours = date.getHours() > 12 ? date.getHours() - 12 : (date.getHours() === 0 ? 12 : date.getHours());
-        let mins = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
-        
-        let randomItem = {
-            name: RandomGenerator.randomSentence(),
-            time: `${hours}:${mins} ${ampm}`
-        };
+        app.get('/tasks/all', TaskController.getAllTasks);
+        app.post('/tasks/add', TaskController.addTask);
+        app.delete('/tasks/delete/:objectId', TaskController.deleteTask);
+        app.put('/tasks/toggleComplete/:id&:complete', TaskController.completeTask);
 
-        db.collection('tasks').insertOne(randomItem, (err) => {
-            if (err)
-                handleError(err);
-            
-            res.send(`
-                Inserted random item:
-                <pre>
-                ${JSON.stringify(randomItem)}
-                </pre>
-            `)
+        app.get('/', (req, res) => {
+            res.sendFile(__dirname + '/www/index.html');
         });
-    });
 
-    app.post('/tasks/add', (req, res) => {
-        let newTask = {
-            name: req.body.taskName,
-            time: req.body.taskTime,
-            complete: false
-        };
-
-        db.collection('tasks').insertOne(newTask, (err, obj) => {
-            if (err)
-                handleError(err);
-
-            res.json({
-                error: false,
-                message: `Added task '${newTask.name}' at time '${newTask.time}' with completion of '${newTask.complete}'`,
-                newTask: obj.ops[0]
-            });
+        app.get('*', (req, res) => {
+            res.send('404');
         });
-    });
-
-    app.delete('/tasks/delete/:objectId', (req, res) => {
-        let query = {
-            '_id': ObjectId(req.params.objectId)
-        };
-
-        db.collection('tasks').deleteOne(query, err => {
-            if (err) 
-                handleError(err);
-
-            res.json({
-                message: `Deleted item with id '${req.params.objectId}'`,
-                taskId: query._id
-            });
-        });
-    });
-
-    app.get('/', (req, res) => {
-        res.sendFile(__dirname + '/www/index.html');
-    })
-
-    app.get('*', (req, res) => {
-        res.send('404');
-    });
+    }
 }

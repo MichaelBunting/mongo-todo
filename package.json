@@ -24,7 +24,7 @@
     "webpack-notifier": "^1.5.0"
   },
   "scripts": {
-    "start": "killall node && nodemon server.js --watch server.js --watch routes.js",
+    "start": "killall node && nodemon server.js --watch server.js --watch routes.js --watch controllers",
     "build": "webpack"
   }
 }
