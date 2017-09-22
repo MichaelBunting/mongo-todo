@@ -37,19 +37,3 @@ MongoClient.connect('mongodb://localhost:27017/mongo-todo', (err, database) => {
         console.error('No connection');
     }
 });
-
-// app.post('/quotes', (req, res) => {
-//     db.collection('quotes').save(req.body, (err, results) => {
-//         if (err)
-//             return console.error(err);
-
-//         console.log('saved to db');
-//         res.redirect('/');
-//     });
-// });
-
-// app.get('/', (req, res) => {
-//     let quotes = db.collection('quotes').find().toArray();
-
-//     // res.send('/index.html', quotes);
-// });

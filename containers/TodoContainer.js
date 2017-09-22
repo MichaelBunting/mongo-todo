@@ -32,19 +32,25 @@ class TodoContainer extends React.Component {
 
     completeTask(e) {
         let id = e.currentTarget.parentNode.dataset.id;
-        let taskObj = this.state.tasks.filter(task => {
+        let taskIndex = this.state.tasks.findIndex(task => {
             return task._id === id;
-        })[0];
+        });
+        let taskObj = this.state.tasks[taskIndex];
         let completeToggle = taskObj.complete ? false : true;
 
         axios.put(`/tasks/toggleComplete/${id}&${completeToggle}`)
             .then(data => {
-                let completedTask = this.state.tasks.find(task => {
-                    return task._id === data.data.taskId;
+                let tasksCopy = this.state.tasks;
+
+                tasksCopy[taskIndex].complete = data.data.complete;
+
+                tasksCopy.sort(task => {
+                    return task.complete ? -1 : 1;
                 });
 
-                console.log(completedTask);
-                // console.log(data);
+                this.setState({
+                    tasks: tasksCopy
+                });
             })
             .catch(err => {
                 console.error(err);

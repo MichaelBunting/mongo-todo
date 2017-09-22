@@ -7,6 +7,7 @@ class TaskController  {
         this.getAllTasks = this.getAllTasks.bind(this);
         this.addTask = this.addTask.bind(this);
         this.deleteTask = this.deleteTask.bind(this);
+        this.completeTask = this.completeTask.bind(this);
     }
 
     handleError(err) {
@@ -75,9 +76,11 @@ class TaskController  {
         let query = {
             '_id': ObjectId(req.params.id)
         };
+        let complete = JSON.parse(req.params.complete);
         let change = {
             $set: {
-                complete: req.params.complete
+                complete: complete,
+                updated_at: timestamp
             }
         };
 
@@ -87,7 +90,8 @@ class TaskController  {
 
             res.json({
                 message: `Updated item with id '${req.params.id}' with complete status of '${req.params.complete}'`,
-                taskId: req.params.id
+                taskId: req.params.id,
+                complete: complete
             });
         });
     }

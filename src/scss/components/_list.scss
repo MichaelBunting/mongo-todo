@@ -23,8 +23,9 @@
             margin-top: -10px;
         }
 
-        &.complete {
+        &--complete {
             opacity: .5;
+            text-decoration: line-through;
 
             .list__check {
                 border-color: $green;
